@@ -1,5 +1,7 @@
 import expressConfig from './express-config';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const app = expressConfig();
 
 // TODO Register routers here with app.use()
