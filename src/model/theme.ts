@@ -1,6 +1,9 @@
-import mongoose from 'mongoose'
+import mongoose, {Document} from 'mongoose'
 const Schema = mongoose.Schema;
 
+export interface ThemeModel extends Document {
+    name: string;
+}
 const themeSchema = new Schema({
  name: {
   type: String,
@@ -9,6 +12,6 @@ const themeSchema = new Schema({
  }
 });
 
-const Theme = mongoose.model('theme', themeSchema);
+const Theme = mongoose.model<ThemeModel>('theme', themeSchema);
 
-module.exports = Theme;
+export default Theme;
