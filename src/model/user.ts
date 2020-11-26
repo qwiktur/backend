@@ -35,7 +35,8 @@ const UserSchema = new Schema({
      type:String
  },
  elo:{
-     type:Number
+     type:Number,
+     default:0
  }
 });
 
