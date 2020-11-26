@@ -43,9 +43,9 @@ export const getThemes = async (req:Request, res:Response):Promise<Response> => 
             const update = req.body
             const themeId = req.params.themeId;
             await Theme.findByIdAndUpdate(themeId, update);
-            const user = await Theme.findById(themeId)
+            const theme = await Theme.findById(themeId)
             res.status(200).json({
-            data: user,
+            data: theme,
             message: 'Theme has been updated'
             });
         } catch (err) {
