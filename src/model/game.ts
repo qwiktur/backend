@@ -4,12 +4,12 @@ import { UserModel }  from './user'
 import {QuestionModel} from './question'
 const Schema = mongoose.Schema;
 
-export interface gameModel extends Document{
+export interface GameModel extends Document{
     theme:ThemeModel,
     players:UserModel[]
 }
 
-export interface gameQuestion{
+export interface GameQuestion{
     question:[{
         target:QuestionModel,
         history:[{
@@ -50,6 +50,6 @@ const gameSchema = new Schema({
  }]
 });
 
-const Game = mongoose.model<gameModel>('game', gameSchema);
+const Game = mongoose.model<GameModel>('game', gameSchema);
 
 export default Game;
