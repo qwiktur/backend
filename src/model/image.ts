@@ -1,5 +1,12 @@
-import mongoose, { isValidObjectId, SchemaTypes } from 'mongoose'
+import mongoose, { SchemaTypes, Document } from 'mongoose'
+import { ThemeModel } from './theme';
 const Schema = mongoose.Schema;
+
+export interface ImageModel extends Document{
+   src:string,
+   title:string,
+   theme:ThemeModel
+}
 
 const imageSchema = new Schema({
  src: {
@@ -19,6 +26,6 @@ const imageSchema = new Schema({
  }
 });
 
-const Image = mongoose.model('image', imageSchema);
+const Image = mongoose.model<ImageModel>('image', imageSchema);
 
-module.exports = Image;
+export default Image;

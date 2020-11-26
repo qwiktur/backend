@@ -1,5 +1,15 @@
-import mongoose, { isValidObjectId, SchemaTypes } from 'mongoose'
+import mongoose, {SchemaTypes,Document} from 'mongoose'
+import { ThemeModel } from './theme';
 const Schema = mongoose.Schema;
+
+export interface QuestionModel extends Document{
+    choices:{
+        label:string,
+        correct:Boolean
+    },
+    title:string,
+    theme:ThemeModel
+}
 
 const questionSchema = new Schema({
  choices: {
@@ -23,6 +33,6 @@ const questionSchema = new Schema({
  }
 });
 
-const Question = mongoose.model('question', questionSchema);
+const Question = mongoose.model<QuestionModel>('question', questionSchema);
 
-module.exports = Question;
+export default Question

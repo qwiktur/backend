@@ -1,4 +1,14 @@
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
+
+export interface UserModel extends Document {
+    email: string;
+    username: string;
+    password: string;
+    role: 'basic' | 'supervisor' | 'admin';
+    language: string;
+    elo: number;
+}
+
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -19,7 +29,7 @@ const UserSchema = new Schema({
  role: {
   type: String,
   default: 'basic',
-  enum: ["basic", "supervisor", "admin"]
+  enum: ['basic', 'supervisor', 'admin']
  },
  language:{
      type:String
@@ -29,6 +39,6 @@ const UserSchema = new Schema({
  }
 });
 
-const User = mongoose.model('user', UserSchema);
+const User = mongoose.model<UserModel>('user', UserSchema);
 
-module.exports = User;
+export default User;

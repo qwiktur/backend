@@ -1,5 +1,24 @@
-import mongoose, { isValidObjectId, SchemaTypes } from 'mongoose'
+import mongoose, { SchemaTypes, Document } from 'mongoose'
+import { ThemeModel } from './theme'
+import { UserModel }  from './user'
+import {QuestionModel} from './question'
 const Schema = mongoose.Schema;
+
+export interface GameModel extends Document{
+    theme:ThemeModel,
+    players:UserModel[]
+}
+
+export interface GameQuestion{
+    question:[{
+        target:QuestionModel,
+        history:[{
+            user:UserModel
+            time:Number,
+            correct:Boolean
+        }]
+    }]
+}
 
 const gameSchema = new Schema({
  
@@ -31,6 +50,6 @@ const gameSchema = new Schema({
  }]
 });
 
-const Game = mongoose.model('game', gameSchema);
+const Game = mongoose.model<GameModel>('game', gameSchema);
 
-module.exports = Game;
+export default Game;
