@@ -7,10 +7,7 @@ export const createQuestion = async (req: Request, res:Response):Promise<Respons
         const question = await Question.create({
             title: req.body.title,
             theme:req.body.theme,
-            choices:{
-                label:req.body.label,
-                correct: req.body.correct
-            }
+            choices:req.body.choices
         });
         return res.status(201).send(question)
     }catch(err){

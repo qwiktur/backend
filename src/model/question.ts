@@ -3,16 +3,19 @@ import { ThemeModel } from './theme';
 const Schema = mongoose.Schema;
 
 export interface QuestionModel extends Document{
-    choices:{
-        label:string,
-        correct:Boolean
-    },
+    choices:[
+        {
+            label:string,
+            correct:Boolean
+        }
+    ]
+    ,
     title:string,
     theme:ThemeModel
 }
 
 const questionSchema = new Schema({
- choices: {
+ choices: [{
     label:{
         type: String,
         required:true
@@ -20,7 +23,7 @@ const questionSchema = new Schema({
     correct:{
         type:Boolean
     }
- },
+ }],
  title:{
     type:String,
     required:true,
