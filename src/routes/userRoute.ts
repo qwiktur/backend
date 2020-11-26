@@ -1,4 +1,4 @@
-import express, {Router} from 'express'
+import {Router} from 'express'
 import {grantAccess,allowIfLoggedin,login,signup,getUser,getUsers,updateUser,deleteUser} from '../controllers/userController'
 const router = Router()
 
@@ -14,4 +14,4 @@ router.put('/user/:userId', allowIfLoggedin, grantAccess('updateAny', 'profile')
 
 router.delete('/user/:userId', allowIfLoggedin, grantAccess('deleteAny', 'profile'), deleteUser);
 
-module.exports = router;
+export default router;

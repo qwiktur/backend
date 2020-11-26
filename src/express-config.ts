@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import mung from 'express-mung';
-
+import Themerouter from '../src/routes/themeRoute'
 const expressConfig = (): express.Application => {
     const app = express();
 
@@ -20,6 +20,9 @@ const expressConfig = (): express.Application => {
         console.log(body);
     }, { mungError: true }));
 
+    //Routers
+    app.use(Themerouter)
+    
     return app;
 }
 
