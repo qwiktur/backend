@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Theme from '../model/theme';
 
-export const createTheme = async (req: Request, res:Response) =>{
+export const createTheme = async (req: Request, res:Response):Promise<Response> =>{
     try{
         const theme = await Theme.create({
             name:req.body.name
@@ -12,7 +12,7 @@ export const createTheme = async (req: Request, res:Response) =>{
     }
 }
 
-export const getThemes = async (req:Request, res:Response) => {
+export const getThemes = async (req:Request, res:Response):Promise<Response> => {
     try{
         const themes = await Theme.find({});
             res.status(200).json({
@@ -23,11 +23,13 @@ export const getThemes = async (req:Request, res:Response) => {
         }
    }
    
-   export const getOneTheme = async (req:Request, res:Response, next:NextFunction) => {
+   export const getOneTheme = async (req:Request, res:Response):Promise<Response> => {
         try {
         const themeId = req.params.themeId;
         const theme = await Theme.findById(themeId);
-        if (!theme) return next(new Error('Theme does not exist'));
+        if (!theme){
+            return res.status(404).send('Theme not found')
+        } 
         res.status(200).json({
         data: theme
         });
@@ -36,7 +38,7 @@ export const getThemes = async (req:Request, res:Response) => {
         }
    }
 
-   export const updateTheme = async (req:Request, res:Response) => {
+   export const updateTheme = async (req:Request, res:Response):Promise<Response> => {
         try {
             const update = req.body
             const themeId = req.params.themeId;
@@ -51,14 +53,17 @@ export const getThemes = async (req:Request, res:Response) => {
         }
    }
 
-   export const deleteTheme = async (req:Request, res: Response)=>{
+   export const deleteTheme = async (req:Request, res: Response):Promise<Response>=>{
        try{
         const themeId = req.params.themeId;
-        await Theme.findByIdAndDelete(themeId);
-        res.status(204).json({
-         data: null,
-         message: ' Theme has been deleted'
-        });
+        const theme = await Theme.findByIdAndDelete(themeId);
+        if(theme == null){
+            return res.status(404).send(({
+                error: 'not_found',
+                error_description: 'Theme not found'
+            }));
+        }
+        return res.status(204).send();
        }catch(err){
             return res.status(500).send(err)
        }
