@@ -1,18 +1,21 @@
-import mongoose, {SchemaTypes,Document} from 'mongoose'
+import mongoose, {Document} from 'mongoose'
 import { ThemeModel } from './theme';
 const Schema = mongoose.Schema;
 
 export interface QuestionModel extends Document{
-    choices:{
-        label:string,
-        correct:Boolean
-    },
+    choices:[
+        {
+            label:string,
+            correct:Boolean
+        }
+    ]
+    ,
     title:string,
     theme:ThemeModel
 }
 
 const questionSchema = new Schema({
- choices: {
+ choices: [{
     label:{
         type: String,
         required:true
@@ -20,14 +23,14 @@ const questionSchema = new Schema({
     correct:{
         type:Boolean
     }
- },
+ }],
  title:{
     type:String,
     required:true,
     trim:true
  },
  theme: {
-  type: SchemaTypes.ObjectId,
+  type: Schema.Types.ObjectId,
   ref: "theme",
   required: true
  }
