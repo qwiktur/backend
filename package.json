@@ -5,10 +5,12 @@
   "description": "",
   "main": "build/app.js",
   "scripts": {
-    "start": "tsc -p tsconfig.json && node build/app.js",
+    "start": "nodemon",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "accesscontrol": "^2.2.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -33,7 +35,9 @@
     "@types/node": "^13.7.0",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",
-    "eslint": "^7.12.1"
+    "eslint": "^7.12.1",
+    "nodemon": "^2.0.6",
+    "ts-node": "^9.0.0"
   },
   "repository": {
     "type": "git",
@@ -44,5 +48,18 @@
   "bugs": {
     "url": "https://github.com/qwiktur/backend/issues"
   },
-  "homepage": "https://github.com/qwiktur/backend#readme"
+  "homepage": "https://github.com/qwiktur/backend#readme",
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "node --inspect=5858 -r ts-node/register ./src/app.ts",
+    "ext": "ts"
+  }
 }
