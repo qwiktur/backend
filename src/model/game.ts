@@ -25,10 +25,10 @@ const gameSchema = new Schema({
   type: Schema.Types.ObjectId,
   ref: "theme"
  },
- players:{
+ players:[{
      type:Schema.Types.ObjectId,
      ref:"user"
- },
+ }],
  questions:[{
      target:{
         type:Schema.Types.ObjectId,
