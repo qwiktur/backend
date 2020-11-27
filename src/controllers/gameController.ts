@@ -1,13 +1,19 @@
 import { Request, Response } from 'express';
 import Game from '../model/game';
+import Question from '../model/question';
 
 
 export const createGame = async (req: Request, res:Response):Promise<Response> =>{
     try{
+        const questions = await Question.find();
         const game = await Game.create({
-            theme:req.body.theme,
-            players:req.body.players,
-            questions: req.body.questions
+            theme: req.body.theme,
+            players: req.body.players,
+            questions: questions.map(question => {
+                return {
+                    target: question.id
+                }
+            })
         });
         return res.status(201).send(game)
     }catch(err){
@@ -25,14 +31,14 @@ export const getAllGames = async (req:Request, res:Response):Promise<Response> =
             return res.status(500).send(err)
         }
    }
-   
+
    export const getOneGame = async (req:Request, res:Response):Promise<Response> => {
         try {
         const gameId = req.params.gameId;
         const game = await Game.findById(gameId);
         if (!game){
             return res.status(404).send('game not found')
-        } 
+        }
         res.status(200).json({
         data: game
         });
