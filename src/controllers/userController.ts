@@ -18,7 +18,7 @@ export const signup = async (req:Request, res:Response, next:NextFunction) => {
   const { email, password, role } = req.body
   const hashedPassword = await hashPassword(password);
   const newUser = new User({ email, password: hashedPassword, role: role || "basic" });
-  const accessToken = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+  const accessToken = jwt.sign({ userId: newUser._id }, process.env.ACCESS_TOKEN_SECRET, {
    expiresIn: "1d"
   });
   await newUser.save();
@@ -38,7 +38,7 @@ export const login = async (req:Request, res:Response, next:NextFunction) => {
      if (!user) return next(new Error('Email does not exist'));
      const validPassword = await validatePassword(password, user.password);
      if (!validPassword) return next(new Error('Password is not correct'))
-     const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+     const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN_EXPIRATION, {
       expiresIn: "1d"
      });
      await User.findByIdAndUpdate(user._id, { accessToken })
