@@ -1,4 +1,4 @@
-import mongoose, { SchemaTypes, Document } from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 import { ThemeModel } from './theme';
 const Schema = mongoose.Schema;
 
@@ -20,7 +20,7 @@ const imageSchema = new Schema({
     trim:true
  },
  theme: {
-  type: SchemaTypes.ObjectId,
+  type: Schema.Types.ObjectId,
   ref: "theme",
   required: true
  }
