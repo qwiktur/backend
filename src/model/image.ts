@@ -1,8 +1,6 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose, { Document, Schema } from 'mongoose';
 import { BaseAttributes } from './model';
 import Theme, { ThemeModel } from './theme';
-
-const Schema = mongoose.Schema;
 
 export interface ImageModel extends BaseAttributes, Document{
     src: string;

@@ -1,7 +1,5 @@
-import mongoose, {Document} from 'mongoose'
+import mongoose, {Document, Schema} from 'mongoose';
 import { BaseAttributes } from './model';
-
-const Schema = mongoose.Schema;
 
 export interface ThemeModel extends BaseAttributes, Document {
     name: string;

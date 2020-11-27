@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import { BaseAttributes } from './model';
 
 export interface UserModel extends BaseAttributes, Document {
@@ -9,8 +9,6 @@ export interface UserModel extends BaseAttributes, Document {
     language: string;
     elo: number;
 }
-
-const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
     email: {
