@@ -1,15 +1,16 @@
-import {Router} from 'express'
-import { createImage, deleteImage, getOneImage, getImages,updateImages }  from '../controllers/imageController'
-const router = Router()
+import { Router } from 'express';
+import { createImage, deleteImage, getOneImage, getImages, updateImages }  from '../controllers/imageController';
 
-router.post('/images', createImage );
+const router = Router();
 
-router.get('/images', getImages);
+router.post('/', createImage );
 
-router.get('/images/:imageId', getOneImage);
+router.get('/', getImages);
 
-router.patch('/images/:imageId', updateImages );
+router.get('/:imageId', getOneImage);
 
-router.delete('/images/:imageId', deleteImage);
+router.patch('/:imageId', updateImages );
+
+router.delete('/:imageId', deleteImage);
 
 export default router;

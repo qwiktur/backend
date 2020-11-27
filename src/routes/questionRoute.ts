@@ -1,15 +1,16 @@
-import {Router} from 'express'
-import { createQuestion, deleteQuestion, getOneQuestion, getAllQuestions,updateQuestion }  from '../controllers/questionController'
-const router = Router()
+import { Router } from 'express';
+import { createQuestion, deleteQuestion, getOneQuestion, getAllQuestions, updateQuestion }  from '../controllers/questionController';
 
-router.post('/questions', createQuestion );
+const router = Router();
 
-router.get('/questions', getAllQuestions);
+router.post('/', createQuestion );
 
-router.get('/questions/:questionId', getOneQuestion);
+router.get('/', getAllQuestions);
 
-router.patch('/questions/:questionId', updateQuestion );
+router.get('/:questionId', getOneQuestion);
 
-router.delete('/questions/:questionId', deleteQuestion);
+router.patch('/:questionId', updateQuestion );
+
+router.delete('/:questionId', deleteQuestion);
 
 export default router;

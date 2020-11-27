@@ -1,17 +1,18 @@
-import {Router} from 'express'
-import {createGame,getAllGames,getOneGame,updateGame,deleteGame,answer} from '../controllers/gameController'
-const router = Router()
+import { Router } from 'express';
+import { createGame, getAllGames, getOneGame, updateGame, deleteGame, answer } from '../controllers/gameController';
 
-router.post('/games', createGame );
+const router = Router();
 
-router.get('/games', getAllGames);
+router.post('/', createGame );
 
-router.get('/games/:gameId', getOneGame);
+router.get('/', getAllGames);
 
-router.patch('/games/:gameId', updateGame );
+router.get('/:gameId', getOneGame);
 
-router.delete('/games/:gameId', deleteGame);
+router.patch('/:gameId', updateGame );
 
-router.patch('/games/:gameId/answer', answer);
+router.delete('/:gameId', deleteGame);
+
+router.patch('/:gameId/answer', answer);
 
 export default router;

@@ -1,15 +1,16 @@
-import {Router} from 'express'
-import { createTheme, deleteTheme, getOneTheme, getThemes,updateTheme }  from '../controllers/themeController'
-const router = Router()
+import { Router } from 'express';
+import { createTheme, deleteTheme, getOneTheme, getThemes, updateTheme }  from '../controllers/themeController';
 
-router.post('/themes', createTheme );
+const router = Router();
 
-router.get('/themes', getThemes);
+router.post('/', createTheme );
 
-router.get('/themes/:themeId', getOneTheme);
+router.get('/', getThemes);
 
-router.patch('/themes/:themeId', updateTheme );
+router.get('/:themeId', getOneTheme);
 
-router.delete('/themes/:themeId', deleteTheme);
+router.patch('/:themeId', updateTheme );
+
+router.delete('/:themeId', deleteTheme);
 
 export default router;

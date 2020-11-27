@@ -1,13 +1,12 @@
 import database from './database';
 import expressConfig from './express-config';
 import dotenv from 'dotenv';
-import themeRouter from './routes/themeRoute'
-import userRouter from './routes/userRoute'
-import questionRouter from './routes/questionRoute'
-import gameRouter from './routes/gameRoute'
-import imageRouter from './routes/imageRoute'
-dotenv.config();
-const app = expressConfig();
+import themeRouter from './routes/themeRoute';
+import userRouter from './routes/userRoute';
+import questionRouter from './routes/questionRoute';
+import gameRouter from './routes/gameRoute';
+import imageRouter from './routes/imageRoute';
+import authRouter from './routes/authRoute';
 
 (async function() {
     try {
@@ -18,12 +17,15 @@ const app = expressConfig();
         await database.connect(process.env.DB_URL);
         console.log(`Connected to database "${process.env.DB_URL}"`);
 
-        // TODO Register routers here with app.use()
-        app.use(themeRouter)
-        app.use(userRouter)
-        app.use(questionRouter)
-        app.use(gameRouter)
-        app.use(imageRouter)
+        // Express configuration
+        const app = expressConfig();
+        app.use('/auth', authRouter);
+        app.use('/themes', themeRouter);
+        app.use('/users', userRouter);
+        app.use('/questions', questionRouter);
+        app.use('/games', gameRouter);
+        app.use('/images', imageRouter);
+
         // Handler used when no endpoint matches
         app.all('*', (req, res) => {
             return res.status(404).json({ error: `Unknown endpoint ${req.method} ${req.originalUrl}` });
