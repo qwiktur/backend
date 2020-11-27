@@ -1,9 +1,8 @@
-import mongoose, { Document } from 'mongoose'
-import { ThemeModel } from './theme'
-import { UserModel }  from './user'
-import {QuestionModel} from './question'
+import mongoose, { Document, Schema } from 'mongoose';
+import { ThemeModel } from './theme';
+import { UserModel }  from './user';
+import {QuestionModel} from './question';
 import { BaseAttributes } from './model';
-const Schema = mongoose.Schema;
 
 export interface GameModel extends BaseAttributes, Document{
     theme:ThemeModel;

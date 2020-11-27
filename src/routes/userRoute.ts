@@ -1,17 +1,14 @@
-import {Router} from 'express'
-import {grantAccess,allowIfLoggedin,login,signup,getUser,getUsers,updateUser,deleteUser} from '../controllers/userController'
-const router = Router()
+import { Router } from 'express'
+import { grantAccess, allowIfLoggedin, getUser, getUsers, updateUser, deleteUser } from '../controllers/userController';
 
-router.post('/signup', signup);
+const router = Router();
 
-router.post('/login', login);
+router.get('/:userId', allowIfLoggedin, getUser);
 
-router.get('/user/:userId', allowIfLoggedin, getUser);
+router.get('/', allowIfLoggedin,grantAccess('readAny', 'profile'), getUsers);
 
-router.get('/users', allowIfLoggedin,grantAccess('readAny', 'profile'), getUsers);
+router.patch('/:userId', allowIfLoggedin, grantAccess('updateAny', 'profile'), updateUser);
 
-router.patch('/user/:userId', allowIfLoggedin, grantAccess('updateAny', 'profile'), updateUser);
-
-router.delete('/user/:userId', allowIfLoggedin, grantAccess('deleteAny', 'profile'), deleteUser);
+router.delete('/:userId', allowIfLoggedin, grantAccess('deleteAny', 'profile'), deleteUser);
 
 export default router;

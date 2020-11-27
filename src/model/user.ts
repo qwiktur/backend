@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose'
+import mongoose, { Document, Schema } from 'mongoose';
 import { BaseAttributes } from './model';
 
 export interface UserModel extends BaseAttributes, Document {
@@ -10,38 +10,44 @@ export interface UserModel extends BaseAttributes, Document {
     elo: number;
 }
 
-const Schema = mongoose.Schema;
-
 const UserSchema = new Schema({
- email: {
-  type: String,
-  required: true,
-  trim: true
- },
- username:{
-    type:String,
-    required:true,
-    trim:true
- },
- password: {
-  type: String,
-  required: true
- },
- role: {
-  type: String,
-  default: 'basic',
-  enum: ['basic', 'supervisor', 'admin']
- },
- language:{
-     type:String
- },
- elo:{
-     type:Number,
-     default:0
- }
+    email: {
+        type: Schema.Types.String,
+        required: [true, 'Email is required'],
+        unique: true,
+        validate: {
+            validator: (email: string) => /\S+@\S+\.\S+/.test(email),
+            message: 'Invalid email'
+        },
+        trim: true
+    },
+    username: {
+        type: Schema.Types.String,
+        required: [true, 'Username is required'],
+        trim: true
+    },
+    password: {
+        type: Schema.Types.String,
+        required: [true, 'Password is required'],
+        select: false
+    },
+    role: {
+        type: Schema.Types.String,
+        enum: ['basic', 'supervisor', 'admin'],
+        default: 'basic'
+    },
+    language: {
+        type: Schema.Types.String,
+        enum: ['en', 'fr', 'de', 'es'],
+        default: 'en'
+    },
+    elo: {
+        type: Schema.Types.Number,
+        default: 0
+    }
 }, {
     timestamps: true
- });
+});
 
 const User = mongoose.model<UserModel>('user', UserSchema);
 
