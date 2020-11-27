@@ -5,6 +5,7 @@ import User  from '../model/user'
 import roles, { Action } from '../roles'
 
 
+
 async function hashPassword(password:string) {
  return await bcrypt.hash(password, 8);
 }
@@ -15,10 +16,10 @@ async function validatePassword(plainPassword:string, hashedPassword:string) {
 
 export const signup = async (req:Request, res:Response, next:NextFunction) => {
  try {
-  const { email, password, role } = req.body
+  const { username,email, password, role } = req.body
   const hashedPassword = await hashPassword(password);
-  const newUser = new User({ email, password: hashedPassword, role: role || "basic" });
-  const accessToken = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+  const newUser = new User({ email,username, password: hashedPassword, role: role || "basic" });
+  const accessToken = jwt.sign({ userId: newUser._id }, process.env.ACCESS_TOKEN_SECRET, {
    expiresIn: "1d"
   });
   await newUser.save();
@@ -38,12 +39,12 @@ export const login = async (req:Request, res:Response, next:NextFunction) => {
      if (!user) return next(new Error('Email does not exist'));
      const validPassword = await validatePassword(password, user.password);
      if (!validPassword) return next(new Error('Password is not correct'))
-     const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+     const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN_EXPIRATION, {
       expiresIn: "1d"
      });
      await User.findByIdAndUpdate(user._id, { accessToken })
      res.status(200).json({
-      data: { email: user.email, role: user.role },
+      data: { email: user.email, role: user.role, auth:true },
       accessToken
      })
     } catch (error) {

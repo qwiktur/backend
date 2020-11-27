@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import themeRouter from './routes/themeRoute'
 import userRouter from './routes/userRoute'
 import questionRouter from './routes/questionRoute'
+import gameRouter from './routes/gameRoute'
 import imageRouter from './routes/imageRoute'
 dotenv.config();
 const app = expressConfig();
@@ -21,6 +22,7 @@ const app = expressConfig();
         app.use(themeRouter)
         app.use(userRouter)
         app.use(questionRouter)
+        app.use(gameRouter)
         app.use(imageRouter)
         // Handler used when no endpoint matches
         app.all('*', (req, res) => {
