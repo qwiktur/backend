@@ -1,8 +1,9 @@
 import mongoose, {Document} from 'mongoose'
+import { BaseAttributes } from './model';
 import { ThemeModel } from './theme';
 const Schema = mongoose.Schema;
 
-export interface QuestionModel extends Document{
+export interface QuestionModel extends BaseAttributes, Document{
     choices:[
         {
             label:string,
@@ -34,7 +35,9 @@ const questionSchema = new Schema({
   ref: "theme",
   required: true
  }
-});
+}, {
+    timestamps: true
+ });
 
 const Question = mongoose.model<QuestionModel>('question', questionSchema);
 

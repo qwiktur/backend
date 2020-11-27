@@ -2,21 +2,22 @@ import mongoose, { Document } from 'mongoose'
 import { ThemeModel } from './theme'
 import { UserModel }  from './user'
 import {QuestionModel} from './question'
+import { BaseAttributes } from './model';
 const Schema = mongoose.Schema;
 
-export interface GameModel extends Document{
-    theme:ThemeModel,
-    players:UserModel[]
-    questions:GameQuestion[]
+export interface GameModel extends BaseAttributes, Document{
+    theme:ThemeModel;
+    players:UserModel[];
+    questions:GameQuestion[];
 }
 
 export interface GameQuestion{
-    target: QuestionModel,
+    target: QuestionModel;
     history?: [{
-        user:UserModel
-        time:number,
-        correct:boolean
-    }]
+        user: UserModel;
+        time: number;
+        correct: boolean;
+    }];
 }
 
 const historySubSchema = new Schema({
@@ -73,6 +74,8 @@ const gameSchema = new Schema({
         }],
         required: [true, 'Questions are required']
     }
+}, {
+    timestamps: true
 });
 
 const Game = mongoose.model<GameModel>('game', gameSchema);

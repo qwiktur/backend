@@ -1,8 +1,9 @@
 import mongoose, { Document } from 'mongoose'
+import { BaseAttributes } from './model';
 import { ThemeModel } from './theme';
 const Schema = mongoose.Schema;
 
-export interface ImageModel extends Document{
+export interface ImageModel extends BaseAttributes, Document{
    src:string,
    title:string,
    theme:ThemeModel
@@ -24,6 +25,8 @@ const imageSchema = new Schema({
   ref: "theme",
   required: true
  }
+}, {
+   timestamps: true
 });
 
 const Image = mongoose.model<ImageModel>('image', imageSchema);
