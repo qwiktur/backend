@@ -5,6 +5,7 @@ import themeRouter from './routes/themeRoute'
 import userRouter from './routes/userRoute'
 import questionRouter from './routes/questionRoute'
 import gameRouter from './routes/gameRoute'
+import imageRouter from './routes/imageRoute'
 dotenv.config();
 const app = expressConfig();
 
@@ -22,6 +23,7 @@ const app = expressConfig();
         app.use(userRouter)
         app.use(questionRouter)
         app.use(gameRouter)
+        app.use(imageRouter)
         // Handler used when no endpoint matches
         app.all('*', (req, res) => {
             return res.status(404).json({ error: `Unknown endpoint ${req.method} ${req.originalUrl}` });
