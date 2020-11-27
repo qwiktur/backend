@@ -1,6 +1,7 @@
 import mongoose, { Document } from 'mongoose'
+import { BaseAttributes } from './model';
 
-export interface UserModel extends Document {
+export interface UserModel extends BaseAttributes, Document {
     email: string;
     username: string;
     password: string;
@@ -38,7 +39,9 @@ const UserSchema = new Schema({
      type:Number,
      default:0
  }
-});
+}, {
+    timestamps: true
+ });
 
 const User = mongoose.model<UserModel>('user', UserSchema);
 
