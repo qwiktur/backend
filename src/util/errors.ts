@@ -5,4 +5,5 @@ export interface ErrorResponse {
 
 export type Error =
       'server_error'
-    | 'not_found';
+    | 'not_found'
+    | 'forbidden';
