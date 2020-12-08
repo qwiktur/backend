@@ -30,7 +30,7 @@ export const getOneGame = async (req: Request, res: Response): Promise<Response>
     try {
         const game = await Game.findById(req.params.gameId);
         if (game == null) {
-            return res.status(404).send({ error: 'not_found', error_description: 'Game not found' } as ErrorResponse)
+            return res.status(404).send({ error: 'not_found', error_description: 'Game not found' } as ErrorResponse);
         }
         return res.status(200).json({ game });
     } catch (err) {
