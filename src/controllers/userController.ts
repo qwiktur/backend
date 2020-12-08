@@ -42,8 +42,8 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         if (user == null) {
             return res.status(404).send({ error: 'not_found', error_description: 'User not found' } as ErrorResponse);
         }
-        if (!await validatePassword(password, user.password)){
-            return res.status(404).send({ error: 'forbidden', error_description: 'Incorrect password' } as ErrorResponse);
+        if (!await validatePassword(password, user.password)) {
+            return res.status(403).send({ error: 'forbidden', error_description: 'Incorrect password' } as ErrorResponse);
         }
         const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: process.env.ACCESS_TOKEN_EXPIRATION
