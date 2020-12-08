@@ -9,7 +9,7 @@ router.get('/', getThemes);
 
 router.get('/:themeId', getOneTheme);
 
-router.patch('/:themeId', updateTheme );
+router.patch('/:themeId', updateTheme);
 
 router.delete('/:themeId', deleteTheme);
 

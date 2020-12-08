@@ -9,7 +9,7 @@ router.get('/', getAllGames);
 
 router.get('/:gameId', getOneGame);
 
-router.patch('/:gameId', updateGame );
+router.patch('/:gameId', updateGame);
 
 router.delete('/:gameId', deleteGame);
 

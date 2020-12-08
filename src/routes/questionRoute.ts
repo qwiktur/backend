@@ -9,7 +9,7 @@ router.get('/', getAllQuestions);
 
 router.get('/:questionId', getOneQuestion);
 
-router.patch('/:questionId', updateQuestion );
+router.patch('/:questionId', updateQuestion);
 
 router.delete('/:questionId', deleteQuestion);
 
