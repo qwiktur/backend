@@ -23,7 +23,7 @@ export const signup = async (req: Request, res: Response): Promise<Response> => 
             password: hashedPassword,
             role: role || 'basic',
             elo: 0,
-            language: 'FR' // TODO Auto language,
+            language: 'fr' // TODO Auto language,
         });
         const accessToken = jwt.sign({ userId: newUser.id }, process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: '1d'
@@ -38,15 +38,15 @@ export const signup = async (req: Request, res: Response): Promise<Response> => 
 export const login = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }, { password: 1});
         if (user == null) {
             return res.status(404).send({ error: 'not_found', error_description: 'User not found' } as ErrorResponse);
         }
         if (!await validatePassword(password, user.password)){
             return res.status(404).send({ error: 'forbidden', error_description: 'Incorrect password' } as ErrorResponse);
         }
-        const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN_EXPIRATION, {
-            expiresIn: '1d'
+        const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRATION
         });
         return res.status(200).json({ id: user.id, accessToken })
     } catch (err) {
