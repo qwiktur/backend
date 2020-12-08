@@ -50,7 +50,7 @@ export const deleteGame = async (req: Request, res: Response): Promise<Response>
     try{
         const game = await Game.findByIdAndDelete(req.params.gameId);
         if (game == null) {
-            return res.status(404).send(({ error: 'not_found', error_description: 'game not found' } as ErrorResponse));
+            return res.status(404).send(({ error: 'not_found', error_description: 'Game not found' } as ErrorResponse));
         }
         return res.status(204).send();
     } catch (err) {
@@ -62,7 +62,7 @@ export const answer = async (req: Request, res: Response): Promise<Response> => 
     try {
         const game = await Game.findById(req.params.gameId).populate('players').populate('questions.target').populate('questions.history.user');
         if (game == null) {
-            return res.status(404).send(({ error: 'not_found', error_description: 'game not found' } as ErrorResponse));
+            return res.status(404).send(({ error: 'not_found', error_description: 'Game not found' } as ErrorResponse));
         }
         const player = await User.findById(req.body.player);
         if (player == null) {

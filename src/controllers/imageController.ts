@@ -48,7 +48,7 @@ export const deleteImage = async (req: Request, res: Response): Promise<Response
     try {
         const image = await Image.findByIdAndDelete(req.params.imageId);
         if (image == null) {
-           return res.status(404).send(({ error: 'not_found', error_description: 'image not found' } as ErrorResponse));
+           return res.status(404).send(({ error: 'not_found', error_description: 'Image not found' } as ErrorResponse));
         }
         return res.status(204).send();
     } catch (err) {
