@@ -3,11 +3,11 @@ import { grantAccess, allowIfLoggedin, getUser, getUsers, updateUser, deleteUser
 
 const router = Router();
 
-router.get('/:userId', allowIfLoggedin, getUser);
-
 router.get('/info', userInfo);
 
 router.get('/', allowIfLoggedin, grantAccess('readAny', 'profile'), getUsers);
+
+router.get('/:userId', allowIfLoggedin, getUser);
 
 router.patch('/:userId', allowIfLoggedin, grantAccess('updateAny', 'profile'), updateUser);
 

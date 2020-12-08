@@ -3,11 +3,11 @@ import { createGame, getAllGames, getOneGame, updateGame, deleteGame, answer } f
 
 const router = Router();
 
-router.post('/', createGame );
-
 router.get('/', getAllGames);
 
 router.get('/:gameId', getOneGame);
+
+router.post('/', createGame);
 
 router.patch('/:gameId', updateGame);
 

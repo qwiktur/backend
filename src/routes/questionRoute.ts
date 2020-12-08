@@ -3,11 +3,11 @@ import { createQuestion, deleteQuestion, getOneQuestion, getAllQuestions, update
 
 const router = Router();
 
-router.post('/', createQuestion );
-
 router.get('/', getAllQuestions);
 
 router.get('/:questionId', getOneQuestion);
+
+router.post('/', createQuestion);
 
 router.patch('/:questionId', updateQuestion);
 

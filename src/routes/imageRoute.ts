@@ -3,11 +3,11 @@ import { createImage, deleteImage, getOneImage, getImages, updateImage }  from '
 
 const router = Router();
 
-router.post('/', createImage );
-
 router.get('/', getImages);
 
 router.get('/:imageId', getOneImage);
+
+router.post('/', createImage );
 
 router.patch('/:imageId', updateImage);
 

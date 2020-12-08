@@ -3,11 +3,11 @@ import { createTheme, deleteTheme, getOneTheme, getThemes, updateTheme }  from '
 
 const router = Router();
 
-router.post('/', createTheme );
-
 router.get('/', getThemes);
 
 router.get('/:themeId', getOneTheme);
+
+router.post('/', createTheme);
 
 router.patch('/:themeId', updateTheme);
 
