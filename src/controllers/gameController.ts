@@ -9,7 +9,7 @@ export const createGame = async (req: Request, res:Response): Promise<Response> 
         const questions = await Question.find(); // TODO Filtrer les questions par thème et limiter à 10 ou 15
         const game = await Game.create({
             theme: req.body.theme,
-            players: req.body.players,
+            players: req.body.players, // TODO Supprimer cette ligne car les joueurs arriveront avec un code généré
             questions: questions.map(question => question.id)
         });
         return res.status(201).send({ game });
