@@ -1,9 +1,11 @@
 import { Router } from 'express'
-import { grantAccess, allowIfLoggedin, getUser, getUsers, updateUser, deleteUser } from '../controllers/userController';
+import { grantAccess, allowIfLoggedin, getUser, getUsers, updateUser, deleteUser, userInfo } from '../controllers/userController';
 
 const router = Router();
 
 router.get('/:userId', allowIfLoggedin, getUser);
+
+router.get('/info', userInfo);
 
 router.get('/', allowIfLoggedin, grantAccess('readAny', 'profile'), getUsers);
 

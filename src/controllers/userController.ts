@@ -54,6 +54,20 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     }
 }
 
+export const userInfo = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const token = req.headers['x-access-token'] as string;
+        const tokenData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as { userId: string };
+        const user = await User.findById(tokenData.userId);
+        if (user == null) {
+            return res.status(404).send({ error: 'not_found', error_description: 'User not found' } as ErrorResponse);
+        }
+        return res.status(200).json({ user });
+    } catch (err) {
+        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+    }
+}
+
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
     try {
         return res.status(200).json(await User.find());
