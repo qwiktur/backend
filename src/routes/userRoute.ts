@@ -1,16 +1,16 @@
 import { Router } from 'express'
-import { allowIfLoggedin, getUser, getUsers, updateUser, deleteUser, userInfo } from '../controllers/userController';
+import { getUser, getUsers, updateUser, deleteUser, userInfo } from '../controllers/userController';
 
 const router = Router();
 
 router.get('/info', userInfo);
 
-router.get('/', allowIfLoggedin, getUsers);
+router.get('/', getUsers);
 
-router.get('/:userId', allowIfLoggedin, getUser);
+router.get('/:userId', getUser);
 
-router.patch('/:userId', allowIfLoggedin, updateUser);
+router.patch('/:userId', updateUser);
 
-router.delete('/:userId', allowIfLoggedin, deleteUser);
+router.delete('/:userId', deleteUser);
 
 export default router;
