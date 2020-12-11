@@ -71,7 +71,7 @@ export const userInfo = async (req: Request, res: Response): Promise<Response> =
 
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).json(await User.find());
+        return res.status(200).json({ users: await User.find() });
     } catch (err) {
         return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
     }
