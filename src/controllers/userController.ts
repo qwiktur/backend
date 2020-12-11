@@ -46,7 +46,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
             return res.status(403).send({ error: 'forbidden', error_description: 'Incorrect password' } as ErrorResponse);
         }
         const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRATION
+            expiresIn: parseInt(process.env.ACCESS_TOKEN_EXPIRATION, 10)
         });
         return res.status(200).json({ id: user.id, accessToken })
     } catch (err) {
@@ -64,6 +64,7 @@ export const userInfo = async (req: Request, res: Response): Promise<Response> =
         }
         return res.status(200).json({ user });
     } catch (err) {
+        console.log(err);
         return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
     }
 }
