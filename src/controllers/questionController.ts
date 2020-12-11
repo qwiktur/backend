@@ -17,7 +17,7 @@ export const createQuestion = async (req: Request, res: Response): Promise<Respo
 
 export const getAllQuestions = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).json(await Question.find());
+        return res.status(200).json({ questions : await Question.find() });
     } catch (err) {
         return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
     }

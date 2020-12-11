@@ -17,7 +17,7 @@ export const createImage = async (req: Request, res: Response): Promise<Response
 
 export const getImages = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).json(await Image.find());
+        return res.status(200).json({ images: await Image.find() });
     } catch (err) {
         return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
     }

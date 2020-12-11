@@ -20,7 +20,7 @@ export const createGame = async (req: Request, res:Response): Promise<Response> 
 
 export const getAllGames = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).json(await Game.find());
+        return res.status(200).json({ games: await Game.find() });
     } catch (err) {
         return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
     }

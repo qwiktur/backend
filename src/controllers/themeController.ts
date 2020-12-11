@@ -15,7 +15,7 @@ export const createTheme = async (req: Request, res: Response): Promise<Response
 
 export const getThemes = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).json(await Theme.find());
+        return res.status(200).json({ themes: await Theme.find() });
     } catch (err) {
         return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
     }
