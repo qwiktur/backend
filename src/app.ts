@@ -28,7 +28,7 @@ import authRouter from './routes/authRoute';
 
         // Handler used when no endpoint matches
         app.all('*', (req, res) => {
-            return res.status(404).json({ error: `Unknown endpoint ${req.method} ${req.originalUrl}` });
+            return res.status(404).send({ error: `Unknown endpoint ${req.method} ${req.originalUrl}` });
         });
 
         app.listen(process.env.API_PORT as unknown as number);

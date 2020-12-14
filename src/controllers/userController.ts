@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { NextFunction, Request, Response } from 'express'
 import User from '../model/user'
 import roles, { Action } from '../roles'
-import { ErrorResponse } from '../util/errors'
+import { formatErrors, formatServerError, translateMongooseValidationError } from '../util/errors'
 
 async function hashPassword(password: string) {
     return await bcrypt.hash(password, 8);
@@ -29,9 +29,12 @@ export const signup = async (req: Request, res: Response): Promise<Response> => 
             expiresIn: '1d'
         });
         await newUser.save();
-        return res.json({ id: newUser.id, accessToken });
+        return res.send({ id: newUser.id, accessToken });
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        if (err.name === 'ValidationError') {
+            return res.status(400).send(formatErrors(...translateMongooseValidationError(err)));
+        }
+        return res.status(500).send(formatServerError());
     }
 }
 
@@ -40,17 +43,20 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         const { email, password } = req.body;
         const user = await User.findOne({ email }, { password: 1});
         if (user == null) {
-            return res.status(404).send({ error: 'not_found', error_description: 'User not found' } as ErrorResponse);
+            return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'User not found' }));
         }
         if (!await validatePassword(password, user.password)) {
-            return res.status(403).send({ error: 'forbidden', error_description: 'Incorrect password' } as ErrorResponse);
+            return res.status(403).send(formatErrors({ error: 'forbidden', error_description: 'Incorrect password' }));
         }
         const accessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: parseInt(process.env.ACCESS_TOKEN_EXPIRATION, 10)
         });
-        return res.status(200).json({ id: user.id, accessToken })
+        return res.status(200).send({ id: user.id, accessToken })
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        if (err.name === 'ValidationError') {
+            return res.status(400).send(formatErrors(...translateMongooseValidationError(err)));
+        }
+        return res.status(500).send(formatServerError());
     }
 }
 
@@ -60,20 +66,19 @@ export const userInfo = async (req: Request, res: Response): Promise<Response> =
         const tokenData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as { userId: string };
         const user = await User.findById(tokenData.userId);
         if (user == null) {
-            return res.status(404).send({ error: 'not_found', error_description: 'User not found' } as ErrorResponse);
+            return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'User not found' }));
         }
-        return res.status(200).json({ user });
+        return res.status(200).send({ user });
     } catch (err) {
-        console.log(err);
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        return res.status(500).send(formatServerError());
     }
 }
 
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).json({ users: await User.find() });
+        return res.status(200).send({ users: await User.find() });
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        return res.status(500).send(formatServerError());
     }
 }
 
@@ -81,29 +86,32 @@ export const getUser = async (req: Request, res: Response): Promise<Response> =>
     try {
         const user = await User.findById(req.params.userId);
         if (user == null) {
-            return res.status(404).send({ error: 'not_found', error_description: 'User not found' } as ErrorResponse);
+            return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'User not found' }));
         }
-        return res.status(200).json({ user });
+        return res.status(200).send({ user });
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        return res.status(500).send(formatServerError());
     }
 }
 
 export const updateUser = async (req: Request, res: Response): Promise<Response> => {
     try {
         const user = await User.findByIdAndUpdate(req.params.userId, req.body);
-        res.status(200).json({ user });
-    } catch (error) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        res.status(200).send({ user });
+    } catch (err) {
+        if (err.name === 'ValidationError') {
+            return res.status(400).send(formatErrors(...translateMongooseValidationError(err)));
+        }
+        return res.status(500).send(formatServerError());
     }
 }
 
 export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
     try {
         await User.findByIdAndDelete(req.params.userId);
-        res.status(204).json();
+        res.status(204).send();
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        return res.status(500).send(formatServerError());
     }
 }
 
@@ -112,7 +120,7 @@ export const grantAccess = function (action: Action, resource: string) {
         try {
             const permission = roles.can(req.body.role as string)[action](resource);
             if (!permission.granted) {
-                return res.status(401).json({ error: 'forbidden', error_description: 'You don\'t have enough permission to perform this action' } as ErrorResponse);
+                return res.status(401).send(formatErrors({ error: 'forbidden', error_description: 'You don\'t have enough permission to perform this action' }));
             }
             return next();
         } catch (err) {
@@ -125,7 +133,7 @@ export const allowIfLoggedin = async (req: Request, res: Response, next: NextFun
     try {
         const user = res.locals.loggedInUser;
         if (user == null) {
-            return res.status(401).json({ error: 'forbidden', error_description: 'You need to be logged in to access this route' } as ErrorResponse);
+            return res.status(401).send(formatErrors({ error: 'forbidden', error_description: 'You need to be logged in to access this route' }));
         }
         req.body = user;
         return next();
