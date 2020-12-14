@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Question from '../model/question';
-import { ErrorResponse } from '../util/errors';
+import { formatErrors, formatServerError, translateMongooseValidationError } from '../util/errors';
 
 export const createQuestion = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -11,15 +11,18 @@ export const createQuestion = async (req: Request, res: Response): Promise<Respo
         });
         return res.status(201).send(question);
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        if (err.name === 'ValidationError') {
+            return res.status(400).send(formatErrors(...translateMongooseValidationError(err)));
+        }
+        return res.status(500).send(formatServerError());
     }
 }
 
 export const getAllQuestions = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).json({ questions : await Question.find() });
+        return res.status(200).send({ questions : await Question.find() });
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        return res.status(500).send(formatServerError());
     }
 }
 
@@ -27,20 +30,23 @@ export const getOneQuestion = async (req: Request, res: Response): Promise<Respo
     try {
         const question = await Question.findById(req.params.questionId);
         if (question == null) {
-            return res.status(404).send({ error: 'not_found', error_description: 'Question not found' } as ErrorResponse);
+            return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'Question not found' }));
         }
-        res.status(200).json({ question });
+        res.status(200).send({ question });
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        return res.status(500).send(formatServerError());
     }
 }
 
 export const updateQuestion = async (req: Request, res: Response): Promise<Response> => {
     try {
         const question = await Question.findByIdAndUpdate(req.params.questionId, req.body);
-        res.status(200).json({ question });
+        res.status(200).send({ question });
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        if (err.name === 'ValidationError') {
+            return res.status(400).send(formatErrors(...translateMongooseValidationError(err)));
+        }
+        return res.status(500).send(formatServerError());
     }
 }
 
@@ -48,10 +54,10 @@ export const deleteQuestion = async (req: Request, res: Response): Promise<Respo
     try {
         const question = await Question.findByIdAndDelete(req.params.questionId);
         if (question == null) {
-           return res.status(404).send({ error: 'not_found', error_description: 'Question not found' } as ErrorResponse);
+            return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'Question not found' }));
         }
         return res.status(204).send();
     } catch (err) {
-        return res.status(500).send({ error: 'server_error', error_description: 'Internal server error' } as ErrorResponse);
+        return res.status(500).send(formatServerError());
     }
 }
