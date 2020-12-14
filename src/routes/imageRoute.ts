@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createImage, deleteImage, getOneImage, getImages, updateImage }  from '../controllers/imageController';
+import { createImage, deleteImage, getOneImage, getImages, updateImage, base64 }  from '../controllers/imageController';
 
 const router = Router();
 
@@ -12,5 +12,7 @@ router.post('/', createImage );
 router.patch('/:imageId', updateImage);
 
 router.delete('/:imageId', deleteImage);
+
+router.get('/:imageId/base64', base64);
 
 export default router;
