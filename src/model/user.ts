@@ -1,3 +1,4 @@
+import mongooseToJson from '@meanie/mongoose-to-json';
 import mongoose, { Document, Schema } from 'mongoose';
 import { BaseAttributes } from './model';
 
@@ -48,6 +49,7 @@ const UserSchema = new Schema({
 }, {
     timestamps: true
 });
+UserSchema.plugin(mongooseToJson);
 
 const User = mongoose.model<UserModel>('user', UserSchema);
 

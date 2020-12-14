@@ -1,3 +1,4 @@
+import mongooseToJson from '@meanie/mongoose-to-json';
 import mongoose, { Document, Schema } from 'mongoose';
 import { BaseAttributes } from './model';
 import Theme, { ThemeModel } from './theme';
@@ -31,6 +32,7 @@ const imageSchema = new Schema({
 },  {
     timestamps: true
 });
+imageSchema.plugin(mongooseToJson);
 
 const Image = mongoose.model<ImageModel>('image', imageSchema);
 

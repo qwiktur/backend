@@ -1,3 +1,4 @@
+import mongooseToJson from '@meanie/mongoose-to-json';
 import mongoose, { Document, Schema } from 'mongoose';
 import { ThemeModel } from './theme';
 import { UserModel }  from './user';
@@ -76,6 +77,7 @@ const gameSchema = new Schema({
 }, {
     timestamps: true
 });
+gameSchema.plugin(mongooseToJson);
 
 const Game = mongoose.model<GameModel>('game', gameSchema);
 
