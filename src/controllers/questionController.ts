@@ -20,7 +20,7 @@ export const createQuestion = async (req: Request, res: Response): Promise<Respo
 
 export const getAllQuestions = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).send({ questions : await Question.find() });
+        return res.status(200).send({ questions : await Question.find().populate('theme') });
     } catch (err) {
         return res.status(500).send(formatServerError());
     }
@@ -28,7 +28,7 @@ export const getAllQuestions = async (req: Request, res: Response): Promise<Resp
 
 export const getOneQuestion = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const question = await Question.findById(req.params.questionId);
+        const question = await Question.findById(req.params.questionId).populate('theme');
         if (question == null) {
             return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'Question not found' }));
         }

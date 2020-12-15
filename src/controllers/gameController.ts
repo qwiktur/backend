@@ -1,16 +1,19 @@
 import { Request, Response } from 'express';
 import Game from '../model/game';
 import Question from '../model/question';
+import Theme from '../model/theme';
 import User from '../model/user';
 import { formatErrors, formatServerError, translateMongooseValidationError } from '../util/errors';
 
 export const createGame = async (req: Request, res:Response): Promise<Response> => {
     try {
-        const questions = await Question.find(); // TODO Filtrer les questions par thème et limiter à 10 ou 15
+        const questions = await Question.find({ theme: await Theme.findById(req.body.theme) }).limit(10);
         const game = await Game.create({
             theme: req.body.theme,
             players: req.body.players, // TODO Supprimer cette ligne car les joueurs arriveront avec un code généré
-            questions: questions.map(question => question.id)
+            questions: questions.map(question => ({
+                target: question.id
+            }))
         });
         return res.status(201).send({ game });
     } catch (err) {
@@ -23,7 +26,7 @@ export const createGame = async (req: Request, res:Response): Promise<Response> 
 
 export const getAllGames = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).send({ games: await Game.find() });
+        return res.status(200).send({ games: await Game.find().populate('theme').populate('players').populate('questions.target').populate('questions.history.user') });
     } catch (err) {
         return res.status(500).send(formatServerError());
     }
@@ -31,7 +34,7 @@ export const getAllGames = async (req: Request, res: Response): Promise<Response
 
 export const getOneGame = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const game = await Game.findById(req.params.gameId);
+        const game = await Game.findById(req.params.gameId).populate('theme').populate('players').populate('questions.target').populate('questions.history.user');
         if (game == null) {
             return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'Game not found' }));
         }

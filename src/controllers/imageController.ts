@@ -21,7 +21,7 @@ export const createImage = async (req: Request, res: Response): Promise<Response
 
 export const getImages = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).send({ images: await Image.find() });
+        return res.status(200).send({ images: await Image.find().populate('theme') });
     } catch (err) {
         return res.status(500).send(formatServerError());
     }
@@ -29,7 +29,7 @@ export const getImages = async (req: Request, res: Response): Promise<Response> 
 
 export const getOneImage = async (req: Request, res: Response): Promise<Response> => {
      try {
-        const image = await Image.findById(req.params.imageId);
+        const image = await Image.findById(req.params.imageId).populate('theme');
         if (image == null) {
             return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'Image not found' }));
         }
