@@ -36,7 +36,7 @@ import questionFetch from './question-fetch';
         console.log(`Server listening on port ${process.env.API_PORT}`);
 
         // OpenQuizzDB questions fetch
-        if (process.env.OPEN_QUIZZ_DB_FETCH) {
+        if (process.env.OPEN_QUIZZ_DB_FETCH === 'true') {
             console.log('OpenQuizzDB fetch is enabled');
             questionFetch.start(process.env.OPEN_QUIZZ_DB_KEY, parseInt(process.env.OPEN_QUIZZ_DB_FETCH_INTERVAL, 10));
         }
