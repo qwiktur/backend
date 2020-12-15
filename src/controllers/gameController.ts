@@ -3,6 +3,33 @@ import Game from '../model/game';
 import Question from '../model/question';
 import User from '../model/user';
 import { formatErrors, formatServerError, translateMongooseValidationError } from '../util/errors';
+import axios from 'axios'
+import Theme from '../model/theme';
+
+interface QuestionResponse {
+    results: [
+        {
+          langue: string;
+          categorie: string;
+          question: string;
+          reponse_correcte: string;
+          autres_choix: string[];
+        }
+      ]
+}
+setInterval(async() =>{
+    const questions = await axios.get<QuestionResponse>('https://www.openquizzdb.org/api.php?key=46Y2S4ERWY')
+        if (!await Question.exists({title:questions.data.results[0].question})){
+            console.log(questions.data.results[0])
+        const question = await Question.create({
+            title: questions.data.results[0].question,
+            theme: (await Theme.findOne({name: {$regex : new RegExp("^" + questions.data.results[0].categorie, "i")}})).id,
+            choices: questions.data.results[0].autres_choix.map(choice => {
+                return { label: choice, correct: choice === questions.data.results[0].reponse_correcte }})
+        })
+        console.log(question)
+    }
+},60000)
 
 export const createGame = async (req: Request, res:Response): Promise<Response> => {
     try {
