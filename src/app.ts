@@ -8,6 +8,7 @@ import gameRouter from './routes/gameRoute';
 import imageRouter from './routes/imageRoute';
 import authRouter from './routes/authRoute';
 import questionFetch from './question-fetch';
+import Websocket from './websocket';
 
 (async function() {
     try {
@@ -32,8 +33,14 @@ import questionFetch from './question-fetch';
             return res.status(404).send({ error: `Unknown endpoint ${req.method} ${req.originalUrl}` });
         });
 
+        // Express initialization
         app.listen(process.env.API_PORT as unknown as number);
         console.log(`Server listening on port ${process.env.API_PORT}`);
+
+        // Websocket initialization
+        const socket = new Websocket();
+        socket.start(parseInt(process.env.WEBSOCKET_PORT, 10));
+        console.log(`Websocket listening on port ${process.env.WEBSOCKET_PORT}`);
 
         // OpenQuizzDB questions fetch
         if (process.env.OPEN_QUIZZ_DB_FETCH === 'true') {
