@@ -1,17 +1,21 @@
 import mongooseToJson from '@meanie/mongoose-to-json';
 import mongoose, { Document, Schema } from 'mongoose';
+import randomString from 'crypto-random-string';
 import { ThemeModel } from './theme';
 import { UserModel }  from './user';
-import {QuestionModel} from './question';
+import { ImageModel }  from './image';
+import { QuestionModel } from './question';
 import { BaseAttributes } from './model';
 
-export interface GameModel extends BaseAttributes, Document{
-    theme:ThemeModel;
-    players:UserModel[];
-    questions:GameQuestion[];
+export interface GameModel extends BaseAttributes, Document {
+    code?: string;
+    theme: ThemeModel;
+    players: UserModel[];
+    questions: GameQuestion[];
+    image: ImageModel;
 }
 
-export interface GameQuestion{
+export interface GameQuestion {
     target: QuestionModel;
     history?: [{
         user: UserModel;
@@ -52,6 +56,10 @@ const questionSubSchema = new Schema({
 });
 
 const gameSchema = new Schema({
+    code: {
+        type: Schema.Types.String,
+        default: randomString({ length: 4, type: 'numeric' })
+    },
     theme: {
         type: Schema.Types.ObjectId,
         ref: 'theme',
@@ -62,17 +70,18 @@ const gameSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref:'user',
         }],
-        required: [true, 'Players are required'],
-        validate: [{
-            validator: (playerIds: string) => playerIds.length >= 2,
-            message: '2 players minimum'
-        }]
+        required: [true, 'Players are required']
     },
     questions: {
         type: [{
             type: questionSubSchema
         }],
         required: [true, 'Questions are required']
+    },
+    image: {
+        type: Schema.Types.ObjectId,
+        ref: 'image',
+        select: false
     }
 }, {
     timestamps: true
