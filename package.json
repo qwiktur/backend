@@ -12,6 +12,7 @@
   "dependencies": {
     "@meanie/mongoose-to-json": "^2.5.0",
     "accesscontrol": "^2.2.1",
+    "axios": "^0.21.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
