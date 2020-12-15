@@ -1,19 +1,23 @@
 import { Request, Response } from 'express';
 import Game from '../model/game';
+import Image from '../model/image';
 import Question from '../model/question';
 import Theme from '../model/theme';
 import User from '../model/user';
 import { formatErrors, formatServerError, translateMongooseValidationError } from '../util/errors';
+import _ from 'lodash';
 
 export const createGame = async (req: Request, res:Response): Promise<Response> => {
     try {
         const questions = await Question.find({ theme: await Theme.findById(req.body.theme) }).limit(10);
+        const images = await Image.find({ theme: req.body.theme });
         const game = await Game.create({
             theme: req.body.theme,
-            players: req.body.players, // TODO Supprimer cette ligne car les joueurs arriveront avec un code généré
+            players: [req.body.author],
             questions: questions.map(question => ({
                 target: question.id
-            }))
+            })),
+            image: images[_.random(0, images.length)].id
         });
         return res.status(201).send({ game });
     } catch (err) {
