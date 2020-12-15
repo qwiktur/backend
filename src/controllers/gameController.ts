@@ -1,16 +1,19 @@
 import { Request, Response } from 'express';
 import Game from '../model/game';
 import Question from '../model/question';
+import Theme from '../model/theme';
 import User from '../model/user';
 import { formatErrors, formatServerError, translateMongooseValidationError } from '../util/errors';
 
 export const createGame = async (req: Request, res:Response): Promise<Response> => {
     try {
-        const questions = await Question.find(); // TODO Filtrer les questions par thème et limiter à 10 ou 15
+        const questions = await Question.find({ theme: await Theme.findById(req.body.theme) }).limit(10);
         const game = await Game.create({
             theme: req.body.theme,
             players: req.body.players, // TODO Supprimer cette ligne car les joueurs arriveront avec un code généré
-            questions: questions.map(question => question.id)
+            questions: questions.map(question => ({
+                target: question.id
+            }))
         });
         return res.status(201).send({ game });
     } catch (err) {
