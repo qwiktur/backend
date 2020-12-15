@@ -7,6 +7,7 @@ import questionRouter from './routes/questionRoute';
 import gameRouter from './routes/gameRoute';
 import imageRouter from './routes/imageRoute';
 import authRouter from './routes/authRoute';
+import questionFetch from './question-fetch';
 
 (async function() {
     try {
@@ -33,6 +34,12 @@ import authRouter from './routes/authRoute';
 
         app.listen(process.env.API_PORT as unknown as number);
         console.log(`Server listening on port ${process.env.API_PORT}`);
+
+        // OpenQuizzDB questions fetch
+        if (process.env.OPEN_QUIZZ_DB_FETCH) {
+            console.log('OpenQuizzDB fetch is enabled');
+            questionFetch.start(process.env.OPEN_QUIZZ_DB_KEY, parseInt(process.env.OPEN_QUIZZ_DB_FETCH_INTERVAL, 10));
+        }
     } catch (err) {
         console.error(err);
     }
