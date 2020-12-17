@@ -59,7 +59,7 @@ export default class Websocket {
                             })),
                             image: images[_.random(0, images.length)].id
                         });
-                        socket.rooms.add(game.code);
+                        socket.join(game.code);
                         socket.emit(SocketEvent.CREATE, { gameId: game.id } as CreateServerToClient);
                     } else {
                         socket.emit(SocketEvent.ERROR, { message: 'Author not found' } as ErrorServerToClient);
@@ -79,8 +79,8 @@ export default class Websocket {
                             game.players.push(user);
                             game.markModified('players');
                             await game.save();
-                            socket.rooms.add(code);
-                            this.broadcast(socket, code, SocketEvent.JOIN, { gameId: game.id } as JoinServerToClient);
+                            socket.join(game.code);
+                            this.broadcast(socket, game.code, SocketEvent.JOIN, { gameId: game.id } as JoinServerToClient);
                         } else {
                             socket.emit(SocketEvent.ERROR, { message: 'User not found' } as ErrorServerToClient);
                         }
