@@ -49,7 +49,7 @@ export default class Websocket {
                     const author = await User.findById(authorId);
                     if (author != null) {
                         const theme = await Theme.findById(themeId);
-                        const questions = _.sampleSize(await Question.find({ theme }), 10);
+                        const questions = _.sampleSize(await Question.find({ theme }), 100);
                         const images = await Image.find({ theme });
                         const game = await Game.create({
                             theme,
