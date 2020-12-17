@@ -80,7 +80,7 @@ export default class Websocket {
                             game.markModified('players');
                             await game.save();
                             socket.rooms.add(code);
-                            socket.emit(SocketEvent.JOIN, { gameId: game.id } as JoinServerToClient);
+                            this.broadcast(socket, code, SocketEvent.JOIN, { gameId: game.id } as JoinServerToClient);
                         } else {
                             socket.emit(SocketEvent.ERROR, { message: 'User not found' } as ErrorServerToClient);
                         }
