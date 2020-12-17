@@ -145,7 +145,7 @@ export default class Websocket {
                                             const currentGameQuestionIndex = _.indexOf(game.questions, currentGameQuestion);
                                             socket.emit(SocketEvent.ANSWER, {
                                                 correct,
-                                                nextQuestionId: (correct && currentGameQuestionIndex < game.questions.length - 1) ? game.questions[currentGameQuestionIndex + 1].target.id : question.id,
+                                                nextQuestionId: (currentGameQuestionIndex < game.questions.length - 1) ? game.questions[currentGameQuestionIndex + 1].target.id : question.id,
                                                 imgBase64: await imgManager.toBase64()
                                             } as AnswerServerToClient);
                                         } else {
