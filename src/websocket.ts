@@ -103,7 +103,7 @@ export default class Websocket {
                                 const imgManager = new ImageManager(game.image);
                                 await imgManager.load();
                                 imgManager.blur(100);
-                                this.broadcast(socket, game.code, SocketEvent.START, { imgBase64: await imgManager.toBase64() } as StartServerToClient);
+                                this.broadcast(socket, game.code, SocketEvent.START, { questionId: game.questions[0].target.id, imgBase64: await imgManager.toBase64() } as StartServerToClient);
                             } else {
                                 socket.emit(SocketEvent.ERROR, { message: 'User is not the author of this game' } as ErrorServerToClient);
                             }
@@ -233,6 +233,7 @@ interface StartClientToServer {
 }
 
 interface StartServerToClient {
+    questionId: string;
     imgBase64: string;
 }
 
