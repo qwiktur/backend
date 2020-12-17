@@ -121,7 +121,7 @@ export default class Websocket {
             socket.on(SocketEvent.ANSWER, async (data: AnswerClientToServer) => {
                 try {
                     const { code, userId, questionId, choice } = data;
-                    const game = await Game.findOne({ code }).select('+image').populate('questions.target').populate('image');
+                    const game = await Game.findOne({ code }).select('+image').populate('questions.target').populate('questions.history.user').populate('image');
                     if (game != null) {
                         const user = await User.findById(userId);
                         if (user != null) {
@@ -137,7 +137,6 @@ export default class Websocket {
                                             }
                                             const correct = question.choices.find(currentChoice => currentChoice.correct).label === choice;
                                             history.push({ user: user.id, correct, time: 0 });
-                                            game.markModified('questions.history');
                                             await game.save();
                                             const imgManager = new ImageManager(game.image);
                                             await imgManager.load();
