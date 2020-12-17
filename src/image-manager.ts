@@ -16,8 +16,10 @@ export default class ImageManager {
         this.obj = await jimp.read(this.image.src);
     }
 
-    public async blur(blur: number = 1): Promise<void> {
-        this.obj.blur(blur);
+    public blur(blur: number = 30): void {
+        if (blur > 0) {
+            this.obj.blur(blur);
+        }
     }
 
     public async write(path: string): Promise<void> {

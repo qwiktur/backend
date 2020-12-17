@@ -101,8 +101,8 @@ export default class Websocket {
                         if (user != null) {
                             if (game.players[0].id === userId) {
                                 const imgManager = new ImageManager(game.image);
-                                await imgManager.blur(100);
                                 await imgManager.load();
+                                imgManager.blur(100);
                                 this.broadcast(socket, game.code, SocketEvent.START, { imgBase64: await imgManager.toBase64() } as StartServerToClient);
                             } else {
                                 socket.emit(SocketEvent.ERROR, { message: 'User is not the author of this game' } as ErrorServerToClient);
@@ -140,8 +140,8 @@ export default class Websocket {
                                             game.markModified('questions.history');
                                             await game.save();
                                             const imgManager = new ImageManager(game.image);
-                                            await imgManager.blur(100 - (correctTotal * 10));
                                             await imgManager.load();
+                                            imgManager.blur(100 - (correctTotal * 10));
                                             this.broadcast(socket, code, SocketEvent.ANSWER, { correct, imgBase64: correct ? await imgManager.toBase64() : null } as AnswerServerToClient);
                                         } else {
                                             socket.emit(SocketEvent.ERROR, { message: 'Player has already answered' } as ErrorServerToClient);
