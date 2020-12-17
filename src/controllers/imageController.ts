@@ -33,7 +33,7 @@ export const getOneImage = async (req: Request, res: Response): Promise<Response
         if (image == null) {
             return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'Image not found' }));
         }
-        return res.status(200).send({ image });
+        return res.status(200).send({ image, base64: await image.toBase64() });
      } catch (err) {
         return res.status(500).send(formatServerError());
      }
