@@ -1,6 +1,5 @@
 import mongooseToJson from '@meanie/mongoose-to-json';
 import mongoose, { Document, Schema } from 'mongoose';
-import ImageManager from '../image-manager';
 import { BaseAttributes } from './model';
 import Theme, { ThemeModel } from './theme';
 
@@ -8,7 +7,6 @@ export interface ImageModel extends BaseAttributes, Document{
     src: string;
     title: string;
     theme: ThemeModel;
-    toBase64?: () => Promise<string>;
 }
 
 const imageSchema = new Schema({
@@ -32,18 +30,7 @@ const imageSchema = new Schema({
         }
     }
 },  {
-    timestamps: true,
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
-});
-imageSchema.method('toBase64', async function(this: ImageModel): Promise<string> {
-    const imgManager = new ImageManager(this);
-    await imgManager.load();
-    return await imgManager.toBase64();
+    timestamps: true
 });
 imageSchema.plugin(mongooseToJson);
 
