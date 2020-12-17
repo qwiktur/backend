@@ -102,7 +102,7 @@ export default class Websocket {
                             if (game.players[0].id === userId) {
                                 const imgManager = new ImageManager(game.image);
                                 await imgManager.load();
-                                socket.emit(SocketEvent.START, { imgBase64: await imgManager.toBase64() } as StartServerToClient);
+                                this.broadcast(socket, SocketEvent.START, game.code, { imgBase64: await imgManager.toBase64() } as StartServerToClient);
                             } else {
                                 socket.emit(SocketEvent.ERROR, { message: 'User is not the author of this game' } as ErrorServerToClient);
                             }
