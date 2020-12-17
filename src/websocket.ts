@@ -17,12 +17,7 @@ export default class Websocket {
 
     public start(port: number): void {
         if (!this.srv) {
-            this.srv = new Server(port, {
-                cors: {
-                    origin: 'http://localhost:3000', // TODO Retirer le port après la MEP
-                    methods: ['GET', 'POST']
-                }
-            });
+            this.srv = new Server(port);
             this.createEvents();
         }
     }
@@ -59,7 +54,7 @@ export default class Websocket {
                         image: images[_.random(0, images.length)].id
                     });
                     socket.rooms.add(game.code);
-                    socket.emit(SocketEvent.CREATE, { gameId: game.id, code: game.code } as CreateServerToClient);
+                    socket.emit(SocketEvent.CREATE, { gameId: game.id } as CreateServerToClient);
                 } else {
                     socket.emit(SocketEvent.ERROR, { message: 'Author not found' } as ErrorServerToClient);
                 }
@@ -185,7 +180,6 @@ interface CreateClientToServer {
 
 interface CreateServerToClient {
     gameId: string;
-    code: string;
 }
 
 interface JoinClientToServer {
