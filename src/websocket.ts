@@ -17,7 +17,12 @@ export default class Websocket {
 
     public start(port: number): void {
         if (!this.srv) {
-            this.srv = new Server(port);
+            this.srv = new Server(port, {
+                cors: {
+                    origin: 'http://localhost:3000', // TODO Retirer le port après la MEP
+                    methods: ['GET', 'POST']
+                }
+            });
             this.createEvents();
         }
     }
