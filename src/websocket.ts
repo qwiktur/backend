@@ -101,6 +101,7 @@ export default class Websocket {
                         if (user != null) {
                             if (game.players[0].id === userId) {
                                 const imgManager = new ImageManager(game.image);
+                                await imgManager.blur(100);
                                 await imgManager.load();
                                 this.broadcast(socket, game.code, SocketEvent.START, { imgBase64: await imgManager.toBase64() } as StartServerToClient);
                             } else {
@@ -130,11 +131,16 @@ export default class Websocket {
                                     if (question.choices.some(questionChoice => questionChoice.label === choice)) {
                                         const history = game.questions.find(gameQuestion => gameQuestion.target.id === question.id).history;
                                         if (!history.some(historyPart => historyPart.user.id === userId)) {
+                                            let correctTotal = 0;
+                                            for (const gameQuestion of game.questions) {
+                                                correctTotal += gameQuestion.history.filter(historyPart => historyPart.user.id === userId && historyPart.correct).length;
+                                            }
                                             const correct = question.choices.find(currentChoice => currentChoice.correct).label === choice;
                                             history.push({ user, correct, time: 0 });
                                             game.markModified('questions.history');
                                             await game.save();
                                             const imgManager = new ImageManager(game.image);
+                                            await imgManager.blur(100 - (correctTotal * 10));
                                             await imgManager.load();
                                             this.broadcast(socket, code, SocketEvent.ANSWER, { correct, imgBase64: correct ? await imgManager.toBase64() : null } as AnswerServerToClient);
                                         } else {
