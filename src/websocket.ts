@@ -127,7 +127,8 @@ export default class Websocket {
                         if (user != null) {
                             const question = await Question.findById(questionId);
                             if (question != null) {
-                                if (game.questions.some(gameQuestion => gameQuestion.target.id === question.id)) {
+                                const currentGameQuestion = game.questions.find(gameQuestion => gameQuestion.target.id === question.id);
+                                if (currentGameQuestion != null) {
                                     if (question.choices.some(questionChoice => questionChoice.label === choice)) {
                                         const history = game.questions.find(gameQuestion => gameQuestion.target.id === question.id).history;
                                         if (!history.some(historyPart => historyPart.user.id === userId)) {
@@ -141,7 +142,12 @@ export default class Websocket {
                                             const imgManager = new ImageManager(game.image);
                                             await imgManager.load();
                                             imgManager.blur(100 - (correctTotal * 10));
-                                            socket.emit(SocketEvent.ANSWER, { correct, imgBase64: await imgManager.toBase64() } as AnswerServerToClient);
+                                            const currentGameQuestionIndex = _.indexOf(game.questions, currentGameQuestion);
+                                            socket.emit(SocketEvent.ANSWER, {
+                                                correct,
+                                                nextQuestionId: (correct && currentGameQuestionIndex < game.questions.length - 1) ? game.questions[currentGameQuestionIndex + 1].target.id : question.id,
+                                                imgBase64: await imgManager.toBase64()
+                                            } as AnswerServerToClient);
                                         } else {
                                             socket.emit(SocketEvent.ERROR, { message: 'Player has already answered' } as ErrorServerToClient);
                                         }
@@ -239,6 +245,7 @@ interface AnswerClientToServer {
 
 interface AnswerServerToClient {
     correct: boolean;
+    nextQuestionId: string;
     imgBase64: string;
 }
 
