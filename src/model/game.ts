@@ -58,7 +58,7 @@ const questionSubSchema = new Schema({
 const gameSchema = new Schema({
     code: {
         type: Schema.Types.String,
-        default: randomString({ length: 4, type: 'numeric' })
+        default: () => randomString({ length: 4, type: 'numeric' })
     },
     theme: {
         type: Schema.Types.ObjectId,
