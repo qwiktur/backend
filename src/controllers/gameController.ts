@@ -30,7 +30,10 @@ export const createGame = async (req: Request, res:Response): Promise<Response> 
 
 export const getAllGames = async (req: Request, res: Response): Promise<Response> => {
     try {
-        return res.status(200).send({ games: await Game.find().populate('theme').populate('players').populate('questions.target').populate('questions.history.user') });
+        const games = await Game.find().populate('theme').populate('players').populate('image').populate('questions.target').populate('questions.history.user');
+        return res.status(200).send({
+            games: await Promise.all(games.map(async game => ({ game, imageBase64: await game.image.toBase64() })))
+        });
     } catch (err) {
         return res.status(500).send(formatServerError());
     }
@@ -38,11 +41,11 @@ export const getAllGames = async (req: Request, res: Response): Promise<Response
 
 export const getOneGame = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const game = await Game.findById(req.params.gameId).populate('theme').populate('players').populate('questions.target').populate('questions.history.user');
+        const game = await Game.findById(req.params.gameId).populate('theme').populate('players').populate('image').populate('questions.target').populate('questions.history.user');
         if (game == null) {
             return res.status(404).send(formatErrors({ error: 'not_found', error_description: 'Game not found' }));
         }
-        return res.status(200).send({ game });
+        return res.status(200).send({ game, imageBase64: await game.image.toBase64() });
     } catch (err) {
         return res.status(500).send(formatServerError());
     }
