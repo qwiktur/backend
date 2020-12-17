@@ -19,7 +19,7 @@ export default class Websocket {
         if (!this.srv) {
             this.srv = new Server(port, {
                 cors: {
-                    origin: 'http://localhost:3000', // TODO Retirer le port après la MEP
+                    origin: '*', // TODO Retirer le port après la MEP
                     methods: ['GET', 'POST']
                 }
             });
@@ -127,8 +127,7 @@ export default class Websocket {
                         if (user != null) {
                             const question = await Question.findById(questionId);
                             if (question != null) {
-                                const currentGameQuestion = game.questions.find(gameQuestion => gameQuestion.target.id === question.id);
-                                if (currentGameQuestion != null) {
+                                if (game.questions.some(gameQuestion => gameQuestion.target.id === question.id)) {
                                     if (question.choices.some(questionChoice => questionChoice.label === choice)) {
                                         const history = game.questions.find(gameQuestion => gameQuestion.target.id === question.id).history;
                                         if (!history.some(historyPart => historyPart.user.id === userId)) {
@@ -141,6 +140,7 @@ export default class Websocket {
                                             await game.save();
                                             const imgManager = new ImageManager(game.image);
                                             await imgManager.load();
+                                            const currentGameQuestion = game.questions.find(gameQuestion => gameQuestion.target.id === question.id);
                                             imgManager.blur(100 - (correctTotal * 10));
                                             const currentGameQuestionIndex = _.indexOf(game.questions, currentGameQuestion);
                                             socket.emit(SocketEvent.ANSWER, {
