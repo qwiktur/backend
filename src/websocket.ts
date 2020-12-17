@@ -49,7 +49,7 @@ export default class Websocket {
                     const author = await User.findById(authorId);
                     if (author != null) {
                         const theme = await Theme.findById(themeId);
-                        const questions = await Question.find({ theme }).limit(10);
+                        const questions = _.sampleSize(await Question.find({ theme }), 10);
                         const images = await Image.find({ theme });
                         const game = await Game.create({
                             theme,
@@ -57,7 +57,7 @@ export default class Websocket {
                             questions: questions.map(question => ({
                                 target: question.id
                             })),
-                            image: images[_.random(0, images.length)].id
+                            image: _.sample(images).id
                         });
                         socket.join(game.code);
                         socket.emit(SocketEvent.CREATE, { gameId: game.id } as CreateServerToClient);
