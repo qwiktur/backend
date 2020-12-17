@@ -141,7 +141,7 @@ export default class Websocket {
                                             const imgManager = new ImageManager(game.image);
                                             await imgManager.load();
                                             imgManager.blur(100 - (correctTotal * 10));
-                                            this.broadcast(socket, code, SocketEvent.ANSWER, { correct, imgBase64: correct ? await imgManager.toBase64() : null } as AnswerServerToClient);
+                                            socket.emit(SocketEvent.ANSWER, { correct, imgBase64: await imgManager.toBase64() } as AnswerServerToClient);
                                         } else {
                                             socket.emit(SocketEvent.ERROR, { message: 'Player has already answered' } as ErrorServerToClient);
                                         }
