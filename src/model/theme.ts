@@ -4,6 +4,7 @@ import { BaseAttributes } from './model';
 
 export interface ThemeModel extends BaseAttributes, Document {
     name: string;
+    image: string;
 }
 
 const themeSchema = new Schema({
@@ -11,6 +12,10 @@ const themeSchema = new Schema({
         type: Schema.Types.String,
         required: [true, 'Name is required'],
         trim: true
+    },
+    image: {
+        type: Schema.Types.String,
+        default: null
     }
 }, {
     timestamps: true
