@@ -95,7 +95,7 @@ export default class Websocket {
             socket.on(SocketEvent.START, async (data: StartClientToServer) => {
                 try {
                     const { code, userId } = data;
-                    const game = await Game.findOne({ code }).select('+image').populate('image');
+                    const game = await Game.findOne({ code }).select('+image').populate('players').populate('image');
                     if (game != null) {
                         const user = await User.findById(userId);
                         if (user != null) {
