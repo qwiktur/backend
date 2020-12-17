@@ -136,7 +136,7 @@ export default class Websocket {
                                                 correctTotal += gameQuestion.history.filter(historyPart => historyPart.user.id === userId && historyPart.correct).length;
                                             }
                                             const correct = question.choices.find(currentChoice => currentChoice.correct).label === choice;
-                                            history.push({ user, correct, time: 0 });
+                                            history.push({ user: user.id, correct, time: 0 });
                                             game.markModified('questions.history');
                                             await game.save();
                                             const imgManager = new ImageManager(game.image);
