@@ -5,7 +5,8 @@ import { formatErrors, formatServerError, translateMongooseValidationError } fro
 export const createTheme = async (req: Request, res: Response): Promise<Response> => {
     try {
         const theme = await Theme.create({
-            name: req.body.name
+            name: req.body.name,
+            image: req.body.image
         });
         return res.status(201).send({ id: theme.id });
     } catch (err) {
