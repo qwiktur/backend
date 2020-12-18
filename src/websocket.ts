@@ -76,11 +76,15 @@ export default class Websocket {
                     if (game != null) {
                         const user = await User.findById(userId);
                         if (user != null) {
-                            game.players.push(user);
-                            game.markModified('players');
-                            await game.save();
-                            socket.join(game.code);
-                            this.broadcast(socket, game.code, SocketEvent.JOIN, { gameId: game.id } as JoinServerToClient);
+                            if (!game.players.map(player => player.id).includes(user.id)) {
+                                game.players.push(user);
+                                game.markModified('players');
+                                await game.save();
+                                socket.join(game.code);
+                                this.broadcast(socket, game.code, SocketEvent.JOIN, { gameId: game.id } as JoinServerToClient);
+                            } else {
+                                socket.emit(SocketEvent.ERROR, { message: 'User is already in this game' } as ErrorServerToClient);
+                            }
                         } else {
                             socket.emit(SocketEvent.ERROR, { message: 'User not found' } as ErrorServerToClient);
                         }
@@ -127,20 +131,20 @@ export default class Websocket {
                         if (user != null) {
                             const question = await Question.findById(questionId);
                             if (question != null) {
-                                if (game.questions.some(gameQuestion => gameQuestion.target.id === question.id)) {
+                                const currentGameQuestion = game.questions.find(gameQuestion => gameQuestion.target.id === question.id);
+                                if (currentGameQuestion != null) {
                                     if (question.choices.some(questionChoice => questionChoice.label === choice)) {
                                         const history = game.questions.find(gameQuestion => gameQuestion.target.id === question.id).history;
                                         if (!history.some(historyPart => historyPart.user.id === userId)) {
-                                            let correctTotal = 0;
-                                            for (const gameQuestion of game.questions) {
-                                                correctTotal += gameQuestion.history.filter(historyPart => historyPart.user.id === userId && historyPart.correct).length;
-                                            }
                                             const correct = question.choices.find(currentChoice => currentChoice.correct).label === choice;
                                             history.push({ user: user.id, correct, time: 0 });
                                             await game.save();
                                             const imgManager = new ImageManager(game.image);
                                             await imgManager.load();
-                                            const currentGameQuestion = game.questions.find(gameQuestion => gameQuestion.target.id === question.id);
+                                            let correctTotal = 0;
+                                            for (const gameQuestion of game.questions) {
+                                                correctTotal += gameQuestion.history.filter(historyPart => historyPart.user.id === userId && historyPart.correct).length;
+                                            }
                                             imgManager.blur(100 - (correctTotal * 10));
                                             const currentGameQuestionIndex = _.indexOf(game.questions, currentGameQuestion);
                                             socket.emit(SocketEvent.ANSWER, {
@@ -178,8 +182,8 @@ export default class Websocket {
                     if (game != null) {
                         const user = await User.findById(userId);
                         if (user != null) {
-                            const expected = title.toLowerCase();
-                            const required = game.image.title.toLowerCase();
+                            const expected = title.toLowerCase().trim().replaceAll(' ', '');
+                            const required = game.image.title.toLowerCase().trim().replaceAll(' ', '');
                             socket.emit(SocketEvent.ANSWER_IMAGE, { correct: expected === required } as AnswerImageServerToClient);
                         } else {
                             socket.emit(SocketEvent.ERROR, { message: 'User not found' } as ErrorServerToClient);
