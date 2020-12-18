@@ -182,8 +182,8 @@ export default class Websocket {
                     if (game != null) {
                         const user = await User.findById(userId);
                         if (user != null) {
-                            const expected = title.toLowerCase().trim().replaceAll(' ', '');
-                            const required = game.image.title.toLowerCase().trim().replaceAll(' ', '');
+                            const expected = title.toLowerCase().trim().replace(/ /g, '');
+                            const required = game.image.title.toLowerCase().trim().replace(/ /g, '');
                             socket.emit(SocketEvent.ANSWER_IMAGE, { correct: expected === required } as AnswerImageServerToClient);
                         } else {
                             socket.emit(SocketEvent.ERROR, { message: 'User not found' } as ErrorServerToClient);
