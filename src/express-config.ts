@@ -12,7 +12,7 @@ const expressConfig = (): express.Application => {
     }));
     app.use(express.json());
     app.use(helmet());
-    app.use(cors());
+    app.use(cors({ origin: '*' }));
 
     // Logging request and response
     app.use(mung.json((body, req) => {
