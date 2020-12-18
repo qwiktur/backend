@@ -19,7 +19,7 @@ export default class Websocket {
         if (!this.srv) {
             this.srv = new Server(port, {
                 cors: {
-                    origin: '*', // TODO Retirer le port après la MEP
+                    origin: '*',
                     methods: ['GET', 'POST']
                 }
             });
