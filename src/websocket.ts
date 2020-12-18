@@ -141,7 +141,7 @@ export default class Websocket {
                                             await game.save();
                                             const imgManager = new ImageManager(game.image);
                                             await imgManager.load();
-                                            let correctTotal = 0;
+                                            let correctTotal = correct ? 1 : 0;
                                             for (const gameQuestion of game.questions) {
                                                 correctTotal += gameQuestion.history.filter(historyPart => historyPart.user.id === userId && historyPart.correct).length;
                                             }
